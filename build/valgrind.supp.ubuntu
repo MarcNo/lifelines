@@ -1,0 +1,59 @@
+# Using valgrind + ncurses will report many leaks.  These are by design.
+# https://invisible-island.net/ncurses/ncurses.faq.html#config_leaks
+{
+   ignore_libncurses_nckeypad_calloc
+   Memcheck:Leak
+   fun:calloc
+   ...
+   obj:/usr/lib/*/libtinfo.so*
+   ...
+   fun:_nc_keypad
+}
+{
+   ignore_libncurses_initscr_malloc
+   Memcheck:Leak
+   fun:malloc
+   ...
+   obj:/usr/lib/*/libncurses*.so*
+   ...
+   fun:initscr
+}
+{
+   ignore_libncurses_initscr_realloc
+   Memcheck:Leak
+   fun:realloc
+   ...
+   obj:/usr/lib/*/libncurses*.so*
+   ...
+   fun:initscr
+}
+{
+   ignore_libncurses_initscr_calloc
+   Memcheck:Leak
+   fun:calloc
+   ...
+   obj:/usr/lib/*/libncurses*.so*
+   ...
+   fun:initscr
+}
+{
+   ignore_libncurses_doupdate_malloc
+   Memcheck:Leak
+   fun:malloc
+   ...
+   fun:doupdate_sp
+}
+{
+   ignore_libncurses_doupdate_realloc
+   Memcheck:Leak
+   fun:realloc
+   ...
+   fun:doupdate_sp
+}
+{
+   ignore_libncurses_doupdate_calloc
+   Memcheck:Leak
+   fun:calloc
+   ...
+   fun:doupdate_sp
+}

@@ -70,6 +70,7 @@ typedef struct tag_cmdarray * CMDARRAY;
 struct tag_menuset {
 	CMDARRAY Commands;
 	MenuItem ** items;  /* array of pointers to items */
+	MenuItem ** extraItems;  /* array of pointers to extra items */
 };
 typedef struct tag_menuset *MENUSET;
 

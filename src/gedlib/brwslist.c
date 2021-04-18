@@ -84,12 +84,20 @@ static LIST browse_lists=0;
  *********************************************/
 
 /*=====================================================
- *  init_browse_lists -- Initialize named browse lists.
+ *  init_browse_lists -- Initialize named browse lists
  *===================================================*/
 void
 init_browse_lists (void)
 {
 	browse_lists = create_list();
+}
+/*=====================================================
+ *  term_browse_lists -- Termiante named browse lists
+ *===================================================*/
+void
+term_browse_lists (void)
+{
+	destroy_list(browse_lists);
 }
 /*===========================================
  *  create_new_blel -- Create browse list entry

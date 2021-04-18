@@ -84,6 +84,7 @@ menuset_init (MENUSET menuset, STRING title, MenuItem ** MenuItems, MenuItem ** 
 	menuset_clear(menuset);
 	menuset->Commands = cmds;
 	menuset->items = MenuItems;
+	menuset->extraItems = extraItems;
 	for (i=0; MenuItems[i]; ++i)
 		add_menu_item(cmds, MenuItems[i]);
 	for (i=0; extraItems[i]; ++i)
@@ -98,9 +99,18 @@ menuset_init (MENUSET menuset, STRING title, MenuItem ** MenuItems, MenuItem ** 
 void
 menuset_clear (MENUSET menuset)
 {
+	INT i;
 	if (menuset->Commands) {
 		free_cmds(menuset->Commands);
 		menuset->Commands = 0;
+	}
+	if (menuset->items) {
+		for (i=0; menuset->items[i]; ++i)
+			strfree(&menuset->items[i]->LocalizedDisplay);
+	}
+	if (menuset->extraItems) {
+		for (i=0; menuset->extraItems[i]; ++i)
+			strfree(&menuset->extraItems[i]->LocalizedDisplay);
 	}
 }
 /*============================

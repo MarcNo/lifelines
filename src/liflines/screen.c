@@ -489,6 +489,10 @@ remove_uiwin (UIWINDOW uiwin)
 	BOOLEAN deleteall = FALSE;
 	ASSERT(list_uiwin);
 	find_delete_list_elements(list_uiwin, param, &does_match, deleteall);
+	// If the list is empty, then delete the list.  This avoids a memory leak.
+	// The list will be created again in add_uiwin if needed.
+	if (is_empty_list(list_uiwin))
+		destroy_empty_list(list_uiwin);
 }
 /*==========================================
  * does_match -- Used as callback to remove_uiwin
@@ -526,11 +530,18 @@ delete_uiwindow (UIWINDOW * uiw)
 {
 	if (*uiw) {
 		UIWINDOW w = *uiw;
+		// remove window from master list
 		remove_uiwin(w);
+		// delete window (curses)
 		ASSERT(uiw_win(w));
 		delwin(uiw_win(w));
+		// delete boxwin (curses)
+		if (uiw_boxwin(w))
+			delwin(uiw_boxwin(w));
+		// delete window name
 		ASSERT(w->name);
 		stdfree((STRING)w->name);
+		// delete window
 		stdfree(w);
 		*uiw = 0;
 	}

@@ -106,6 +106,7 @@ static RECORD history_back(struct hist * histp);
 static RECORD do_disp_history_list(struct hist * histp);
 static void history_record(RECORD rec, struct hist * histp);
 static RECORD history_fwd(struct hist * histp);
+static void init_hist_lists(void);
 static void init_hist(struct hist * histp, INT count);
 static void load_hist_lists(void);
 static void load_nkey_list(STRING key, struct hist * histp);
@@ -115,6 +116,8 @@ static void pick_remove_spouse_from_family(RECORD frec);
 static void save_hist_lists(void);
 static void save_nkey_list(STRING key, struct hist * histp);
 static void setrecord(RECORD * dest, RECORD * src);
+static void term_hist_lists(void);
+static void term_hist(struct hist * histp);
 
 /*********************************************
  * local variables
@@ -1505,11 +1508,11 @@ choose_any_other (void)
 	return rec;
 }
 /*==================================================
- * load_hist_lists -- Load previous history from database
- * Created: 2001/12/23, Perry Rapp
+ * init_hist_lists -- initialize history lists
+ * Created: 2021/04/18, Matt Emmerton
  *================================================*/
 static void
-load_hist_lists (void)
+init_hist_lists (void)
 {
 	/* V for visit history, planning to also have a change history */
 	INT count = getlloptint("HistorySize", 20);
@@ -1517,6 +1520,14 @@ load_hist_lists (void)
 		count = 20;
 	init_hist(&vhist, count);
 	init_hist(&chist, count);
+}
+/*==================================================
+ * load_hist_lists -- Load previous history from database
+ * Created: 2001/12/23, Perry Rapp
+ *================================================*/
+static void
+load_hist_lists (void)
+{
 	if (getlloptint("SaveHistory", 0)) {
 		load_nkey_list("HISTV", &vhist);
 		load_nkey_list("HISTC", &chist);
@@ -1535,6 +1546,16 @@ save_hist_lists (void)
 	save_nkey_list("HISTC", &chist);
 }
 /*==================================================
+ * term_hist_lists -- destroy history lists
+ * Created: 2021/04/18, Matt Emmerton
+ *=================================================*/
+static void
+term_hist_lists (void)
+{
+	term_hist(&vhist);
+	term_hist(&chist);
+}
+/*==================================================
  * init_hist -- create & initialize a history list
  * Created: 2001/12/23, Perry Rapp
  *=================================================*/
@@ -1548,6 +1569,16 @@ init_hist (struct hist * histp, INT count)
 	memset(histp->list, 0, size);
 	histp->start = -1;
 	histp->past_end = 0;
+}
+/*==================================================
+ * term_hist -- destroy a history list
+ * Created: 2021/04/18, Matt Emmerton
+ *=================================================*/
+static void
+term_hist (struct hist * histp)
+{
+	stdfree(histp->list);
+	histp->size = 0;
 }
 /*==================================================
  * load_nkey_list -- Load node list from record into NKEY array
@@ -2055,6 +2086,7 @@ get_chist_len (void)
 void
 init_browse_module (void)
 {
+	init_hist_lists();
 	load_hist_lists();
 }
 /*==================================================
@@ -2066,4 +2098,5 @@ void
 term_browse_module (void)
 {
 	save_hist_lists();
+	term_hist_lists();
 }

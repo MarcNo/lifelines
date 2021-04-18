@@ -194,6 +194,7 @@ term_codesets (void)
 	strfree(&gui_codeset_in);
 	strfree(&report_codeset_out);
 	strfree(&report_codeset_in);
+	strfree(&defcodeset);
 }
 /*=================================================
  * get_defcodeset -- Return user's default codeset

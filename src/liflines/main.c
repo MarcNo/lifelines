@@ -480,11 +480,9 @@ shutdown_ui (BOOLEAN pause)
 	term_screen();
 	if (pause) /* if error, give user a second to read it */
 		sleep(1);
-	/* TO DO - signals also calls into here -- how do we figure out
-	whether or not we should call endwin ? In case something happened
-	before curses was invoked, or after it already closed ? */
 	/* Terminate Curses UI */
-	endwin();
+	if (!isendwin())
+		endwin();
 }
 /* Finnish language support modifies the soundex codes for names, so
  * a database created with this support is not compatible with other
